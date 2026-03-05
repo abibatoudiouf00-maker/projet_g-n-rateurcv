@@ -1,842 +1,156 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>generateur de cv</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head><body><div class="app"><header class="app-header"><div class="logo"><span class="logo-cv">CV</span><span class="logo-forge">Forge</span><span class="logo-dot"></span></div><div class="header-right"><span class="save-badge" id="save-badge">💾 Sauvegarde auto</span><button class="btn btn-ghost btn-sm" id="btn-mobile-preview" style="display:none">👁 Aperçu</button><button class="btn btn-accent" id="btn-export">📄 Générer le PDF</button></div></header><div class="app-body">
-  
-<nav class="sidebar">
-  <div style="padding: 12px 8px 6px;">
-    <span class="nav-section-label">Mon CV</span>
-  </div>
-  <button class="nav-btn active" data-sec="personnel"><span class="ni">👤</span> Informations</button>
-  <button class="nav-btn" data-sec="experiences"><span class="ni">💼</span> Expériences</button>
-  <button class="nav-btn" data-sec="formations"><span class="ni">🎓</span> Formations</button>
-  <button class="nav-btn" data-sec="competences"><span class="ni">⚡</span> Compétences</button>
-  <button class="nav-btn" data-sec="langues"><span class="ni">🌍</span> Langues</button>
-  <button class="nav-btn" data-sec="interets"><span class="ni">✨</span> Centres d'intérêt</button>
-  <div style="padding: 12px 8px 6px; margin-top: 6px; border-top: 1px solid var(--border);">
-    <span class="nav-section-label">Présentation</span>
-  </div>
-  <button class="nav-btn" data-sec="template"><span class="ni">🎨</span> Modèle</button>
-  <button class="nav-btn" data-sec="parametres"><span class="ni">⚙️</span> Paramètres</button>
-  <div class="sidebar-footer">
-    <div style="font-size: 0.72rem; color: var(--muted); line-height: 1.5;">Données sauvegardées localement dans votre navigateur.</div>
-  </div>
-</nav>
-
-<div class="form-panel">
-
-
-  <div class="section active" id="sec-personnel">
-    <div class="sec-head"><h2>Informations Personnelles</h2><p>Ces informations s'affichent en en-tête de votre CV.</p></div>
-
-    <div class="photo-area">
-      <div class="photo-zone" id="photo-zone" onclick="document.getElementById('photo-file').click()">
-        <span class="zone-hint"><span class="zone-icon">📷</span>Cliquer ou<br>glisser ici</span>
-        <img id="photo-img" alt="Photo">
-      </div>
-      <input type="file" id="photo-file" accept="image/*" style="display:none">
-      <div class="photo-info"><p>Photo de profil professionnelle.<br>JPG, PNG ou WebP.<br>Glissez-déposez ou cliquez.</p></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Générateur de cv</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+    <div class="logo"> CV<span>Pro</span></div>
+    <div class="h-btns">
+        <button class="btn btn-o" onclick="App.reset()">↺ Réinitialiser</button>
+        <button class="btn btn-o" onclick="Server.save()">☁ Sauver</button>
+        <button class="btn btn-g" onclick="PDF.go()">⬇ Exporter PDF</button>
     </div>
+</header>
 
-    <div class="form-row">
-      <div class="form-group"><label>Prénom *</label><input id="p-firstName" type="text" placeholder="ex : Moussa"></div>
-      <div class="form-group"><label>Nom *</label><input id="p-lastName" type="text" placeholder="ex : Diallo"></div>
-    </div>
-    <div class="form-group"><label>Titre / Poste visé</label><input id="p-title" type="text" placeholder="ex : Développeur Full Stack · Expert React"></div>
-    <div class="form-row">
-      <div class="form-group"><label>Email *</label><input id="p-email" type="email" placeholder="prenom.nom@email.com"></div>
-      <div class="form-group"><label>Téléphone (Sénégal)</label><input id="p-phone" type="tel" placeholder="+221 77 123 45 67"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Adresse</label><input id="p-address" type="text" placeholder="ex : Sacré-Cœur, Villa 45"></div>
-      <div class="form-group"><label>Ville</label><input id="p-city" type="text" placeholder="ex : Dakar"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>LinkedIn</label><input id="p-linkedin" type="text" placeholder="linkedin.com/in/votre-profil"></div>
-      <div class="form-group"><label>Site web / Portfolio</label><input id="p-website" type="text" placeholder="votre-site.com"></div>
-    </div>
-    <div class="form-group">
-      <label>Résumé / Profil professionnel</label>
-      <textarea id="p-summary" placeholder="Décrivez votre profil en 2-3 phrases : votre expertise, vos forces, ce que vous apportez..."></textarea>
-    </div>
+<div class="shell">
+
+    <div class="editor">
+        <div class="steps">
+            <button class="step on" data-i="0"><span class="step-n">1</span>Profil</button>
+            <button class="step" data-i="1"><span class="step-n">2</span>Parcours</button>
+            <button class="step" data-i="2"><span class="step-n">3</span>Compétences</button>
+            <button class="step" data-i="3"><span class="step-n">4</span>Style</button>
+        </div>
+
+        <div class="ebody">
+            <div class="sc on" id="sc-0">
+                <p class="stl">Informations personnelles</p>
+                <div class="photo-row">
+                    <div class="photo-circle" onclick="document.getElementById('photo-input').click()">
+                        <img id="photo-img" src="" style="display:none;width:100%;height:100%;object-fit:cover">
+                        <span id="photo-ph">+<br>Photo</span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:.35rem">
+                        <label class="lbl-btn" for="photo-input">Choisir une photo</label>
+                        <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="App.photo(event)">
+                        <button class="ghost" onclick="App.rmPhoto()">Supprimer</button>
+                    </div>
+                </div>
+  <div class="grid">
+<div class="f x2">
+      <label>Prénom & Nom <span class="req">*</span></label>
+      <input type="text" id="f-name" placeholder="Fatou Diallo" oninput="Store.save()">
+      <span class="ferr" id="err-name"></span>
+</div>
+<div class="f x2">
+   ut type="text" id="f-job" placeholder="Développeuse Full Stack" oninput="Store.save()">
+</div>
+<div class="f">
+    <label>Email <span class="req">*</span></label>
+    <input type="email" id="f-email" placeholder="fatou@example.com" oninput="Store.save()">
+    <span class="ferr" id="err-email"></span>
+</div>
+<div class="f">
+    <label>Téléphone <span class="req">*</span></label>
+    <input type="tel" id="f-phone" placeholder="77 123 45 67" oninput="Store.save()">
+    <span class="ferr" id="err-phone"></span>
+</div>
+<div class="f">
+      <label>Ville</label>
+      <input type="text" id="f-city" placeholder="Dakar, Sénégal" oninput="Store.save()">
+</div>
+<div class="f">
+      <label>LinkedIn / Site</label>
+      <input type="text" id="f-web" placeholder="linkedin.com/in/fatou" oninput="Store.save()">
+</div>
+<div class="f x2">
+      <label>Résumé professionnel</label>
+      <textarea id="f-summary" rows="4" placeholder="Présentez-vous..." oninput="Store.save()"></textarea>
+</div>
   </div>
+  <div class="snav"><div></div><button class="btn btn-g" onclick="App.step(1)">Suivant →</button></div>
+</div>
 
-  <div class="section" id="sec-experiences">
-    <div class="sec-head"><h2>Expériences Professionnelles</h2><p>Ajoutez vos expériences, les plus récentes en premier.</p></div>
-    <div class="dyn-list" id="list-experiences"></div>
-    <button class="btn-add-dyn" id="add-exp">+ Ajouter une expérience</button>
+<div class="sc" id="sc-1">
+  <p class="stl">Expériences professionnelles</p>
+  <div id="list-exp"></div>
+      <button class="add-btn" onclick="Dyn.exp()">＋ Ajouter une expérience</button>
+  <hr>
+  <p class="stl">Formation académique</p>
+  <div id="list-edu"></div>
+      <button class="add-btn" onclick="Dyn.edu()">＋ Ajouter une formation</button>
+  <div class="snav">
+      <button class="btn btn-o" onclick="App.step(0)">← Précédent</button>
+      <button class="btn btn-g" onclick="App.step(2)">Suivant →</button>
   </div>
-
-  <div class="section" id="sec-formations">
-    <div class="sec-head"><h2>Formations Académiques</h2><p>Diplômes, certifications, formations professionnelles.</p></div>
-    <div class="dyn-list" id="list-formations"></div>
-    <button class="btn-add-dyn" id="add-form">＋ Ajouter une formation</button>
-  </div>
-
-  <div class="section" id="sec-competences">
-    <div class="sec-head"><h2>Compétences</h2><p>Cliquez sur les étoiles pour évaluer votre niveau de 1 à 5.</p></div>
-    <div id="list-competences"></div>
-    <button class="btn-add-dyn" id="add-comp"> + Ajouter une compétence</button>
-  </div>
-
-  <div class="section" id="sec-langues">
-    <div class="sec-head"><h2>Langues</h2><p>Indiquez les langues maîtrisées selon le cadre européen CECRL.</p></div>
-    <div id="list-langues"></div>
-    <button class="btn-add-dyn" id="add-lang"> + Ajouter une langue</button>
-  </div>
-
-  <div class="section" id="sec-interets">
-    <div class="sec-head"><h2>Centres d'intérêt</h2><p>Tapez un intérêt et appuyez sur Entrée ou cliquez Ajouter.</p></div>
-    <div class="form-group">
-      <label>Vos centres d'intérêt</label>
-      <div class="tags-container" id="tags-box">
-        <input type="text" id="interet-field" placeholder="ex : Photographie, Football, IA...">
-      </div>
-    </div>
-    <button class="btn-add-dyn" id="add-int">＋ Ajouter</button>
-  </div>
-
-  <div class="section" id="sec-template">
-    <div class="sec-head"><h2>Modèle de CV</h2><p>Choisissez un style. Vos données s'adaptent automatiquement sans perte.</p></div>
-    <div class="tpl-grid">
-      <div class="tpl-card active" data-tpl="moderne">
-        <div class="tpl-thumb">
-          <div class="tpl-m">
-            <div class="tpl-m-side"></div>
-            <div class="tpl-m-main">
-              <div class="tl a"></div><div class="tl s"></div>
-              <div style="height:6px"></div>
-              <div class="tl"></div><div class="tl s"></div><div class="tl"></div>
+</div>
+ <div class="sc" id="sc-2">
+                <p class="stl">Compétences</p>
+                <div id="list-skills"></div>
+                <button class="add-btn" onclick="Dyn.skill()">＋ Ajouter une compétence</button>
+                <hr>
+                <p class="stl">Langues</p>
+                <div id="list-langs"></div>
+                <button class="add-btn" onclick="Dyn.lang()">＋ Ajouter une langue</button>
+                <hr>
+                <p class="stl">Centres d'intérêt</p>
+                <textarea id="f-interests" rows="2" placeholder="Voyages, Sport..." oninput="Store.save()"></textarea>
+                <div class="snav">
+                    <button class="btn btn-o" onclick="App.step(1)">← Précédent</button>
+                    <button class="btn btn-g" onclick="App.step(3)">Suivant →</button>
+                </div>
             </div>
-          </div>
+
+            <div class="sc" id="sc-3">
+                <p class="stl">Modèle de CV</p>
+                <div class="tpl-grid">
+                    <div class="tcard on" data-tpl="m" onclick="Style.tpl('m',this)">
+                        <div class="tinfo">Moderne (Sidebar)</div>
+                    </div>
+                    <div class="tcard" data-tpl="e" onclick="Style.tpl('e',this)">
+                        <div class="tinfo">Executive (Classique)</div>
+                    </div>
+                </div>
+                <p class="stl" style="margin-top:1.5rem">Couleur d'accent</p>
+                <div class="colors">
+                    <div class="csw on" data-c="#c9914a" style="background:#c9914a" onclick="Style.color('#c9914a',this)"></div>
+                    <div class="csw" data-c="#2d6a8f" style="background:#2d6a8f" onclick="Style.color('#2d6a8f',this)"></div>
+                    <div class="csw" data-c="#4a7c59" style="background:#4a7c59" onclick="Style.color('#4a7c59',this)"></div>
+                    <div class="csw" data-c="#7b4a8f" style="background:#7b4a8f" onclick="Style.color('#7b4a8f',this)"></div>
+                </div>
+                <div class="snav">
+                    <button class="btn btn-o" onclick="App.step(2)">← Précédent</button>
+                    <button class="btn btn-g" onclick="Validate.all()">✓ Générer mon CV</button>
+                </div>
+            </div>
         </div>
-        <h4>Moderne</h4>
-        <p>Sidebar colorée, barres de compétences</p>
-        <span class="tpl-badge badge-red">Recommandé</span>
-      </div>
-      <div class="tpl-card" data-tpl="classique">
-        <div class="tpl-thumb">
-          <div class="tpl-c">
-            <div class="tpl-c-bar"></div>
-            <div class="tpl-c-row"><div class="tpl-c-date"></div><div class="tpl-c-lines"><div class="tpl-c-l1"></div><div class="tpl-c-l2"></div></div></div>
-            <div class="tpl-c-row"><div class="tpl-c-date"></div><div class="tpl-c-lines"><div class="tpl-c-l1"></div><div class="tpl-c-l2"></div></div></div>
-            <div class="tpl-c-row"><div class="tpl-c-date"></div><div class="tpl-c-lines"><div class="tpl-c-l1"></div><div class="tpl-c-l2"></div></div></div>
-          </div>
+    </div>
+
+    <div class="preview">
+        <div class="pbar">
+            <span>Aperçu en direct</span>
+            <div class="zbtns">
+                <button onclick="UI.z(-.1)">−</button>
+                <span class="zval" id="zval">85%</span>
+                <button onclick="UI.z(.1)">+</button>
+            </div>
         </div>
-        <h4>Classique</h4>
-        <p>Timeline élégante, style traditionnel</p>
-        <span class="tpl-badge badge-gold">Professionnel</span>
-      </div>
-    </div>
-    <div style="margin-top:20px; padding:14px; background:rgba(233,69,96,0.04); border:1px solid rgba(233,69,96,0.12); border-radius:var(--r);">
-      <p style="font-size:0.83rem; color:var(--muted);">💡 <strong>Astuce :</strong> Changez de modèle à tout moment — vos données sont préservées.</p>
-    </div>
-  </div>
-    <div class="section" id="sec-parametres">
-    <div class="sec-head"><h2>Paramètres</h2><p>Sécurité et gestion de vos données.</p></div>
-    <div class="settings-card">
-      <h3>🔐 Mot de passe de protection</h3>
-      <p>Protégez votre CV avec un mot de passe (minimum 6 caractères).</p>
-      <div class="form-group"><label>Nouveau mot de passe</label><input type="password" id="pwd-new" placeholder="••••••••" autocomplete="new-password"></div>
-      <div class="form-group"><label>Confirmer le mot de passe</label><input type="password" id="pwd-confirm" placeholder="••••••••" autocomplete="new-password"></div>
-      <button class="btn btn-primary" id="btn-save-pwd">💾 Enregistrer</button>
-    </div>
-    <div class="settings-card">
-      <h3>💾 Données locales</h3>
-      <p>Vos données sont sauvegardées automatiquement dans le <strong>localStorage</strong> de votre navigateur et restaurées à chaque visite.</p>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-ghost btn-sm" id="btn-export-json">⬇️ Exporter JSON</button>
-        <button class="btn btn-danger btn-sm" id="btn-reset">🗑️ Effacer tout</button>
-      </div>
-    </div>
-    <div class="settings-card">
-      <h3>📄 Export PDF</h3>
-      <p>Cliquez sur le bouton ci-dessous ou sur <strong>"Générer le PDF"</strong> en haut. Dans la fenêtre d'impression, sélectionnez <em>"Enregistrer en PDF"</em> comme destination.</p>
-      <button class="btn btn-accent" onclick="document.getElementById('btn-export').click()">📄 Générer le PDF</button>
-    </div>
-  </div>
-</div>
-<div class="preview-panel" id="preview-panel">
-  <div class="preview-header">
-    <span class="preview-title">Aperçu en temps réel</span>
-    <span class="preview-scale">Format A4</span>
-  </div>
-  <div class="preview-wrap">
-    <div id="cv-output"></div>
-  </div>
-</div>
-</div>
-</div>
-<script>
-const STORAGE_KEY = 'cvforge_v2';
-let data = {
-  personal: { firstName:'', lastName:'', title:'', email:'', phone:'', address:'', city:'', linkedin:'', website:'', summary:'', photo:'' },
-  experiences: [],
-  formations: [],
-  competences: [],
-  langues: [],
-  interets: [],
-  template: 'moderne',
-  pwd: ''
-};
-
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  const b = document.getElementById('save-badge');
-  b.textContent = '✓ Sauvegardé';
-  b.classList.add('saved');
-  setTimeout(() => { b.textContent = '💾 Sauvegarde auto'; b.classList.remove('saved'); }, 2000);
-}
-
-function loadData() {
-  try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) data = Object.assign({}, data, JSON.parse(s));
-  } catch(e) {}
-}
-
-function uid() { return Date.now() + Math.random().toString(36).slice(2,6); }
-
-
-function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
-function validatePhone(v) { if (!v) return true; const c = v.replace(/[\s\-\.]/g,''); return /^(\+221)?(7[0-9]{8})$/.test(c); }
-function validatePassword(v) { return v && v.length >= 6; }
-
-function showErr(el, msg) {
-  clearErr(el);
-  el.classList.add('input-error');
-  const e = document.createElement('span');
-  e.className = 'err-msg'; e.textContent = msg;
-  el.parentNode.insertBefore(e, el.nextSibling);
-}
-function clearErr(el) {
-  el.classList.remove('input-error');
-  const n = el.nextSibling;
-  if (n && n.classList && n.classList.contains('err-msg')) n.remove();
-}
-
-
-document.querySelectorAll('.nav-btn[data-sec]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('sec-' + btn.dataset.sec).classList.add('active');
-  });
-});
-
-
-document.getElementById('photo-file').addEventListener('change', function() {
-  const f = this.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = e => { data.personal.photo = e.target.result; setPhotoPreview(e.target.result); saveData(); renderCV(); };
-  r.readAsDataURL(f);
-});
-
-const pz = document.getElementById('photo-zone');
-pz.addEventListener('dragover', e => { e.preventDefault(); pz.style.borderColor='var(--red)'; });
-pz.addEventListener('dragleave', () => { pz.style.borderColor=''; });
-pz.addEventListener('drop', e => {
-  e.preventDefault(); pz.style.borderColor='';
-  const f = e.dataTransfer.files[0]; if (!f || !f.type.startsWith('image/')) return;
-  const r = new FileReader();
-  r.onload = ev => { data.personal.photo = ev.target.result; setPhotoPreview(ev.target.result); saveData(); renderCV(); };
-  r.readAsDataURL(f);
-});
-
-function setPhotoPreview(src) {
-  const img = document.getElementById('photo-img');
-  img.src = src; img.style.display = 'block';
-  document.getElementById('photo-zone').classList.add('has-photo');
-}
-
-
-['firstName','lastName','title','email','phone','address','city','linkedin','website','summary'].forEach(f => {
-  const el = document.getElementById('p-' + f);
-  if (!el) return;
-  el.addEventListener('input', () => {
-    data.personal[f] = el.value;
-    
-    if (f === 'email' && el.value) { if (!validateEmail(el.value)) showErr(el,'Email invalide.'); else clearErr(el); }
-    if (f === 'phone' && el.value) { if (!validatePhone(el.value)) showErr(el,'Format sénégalais requis : +221 7X XXX XX XX'); else clearErr(el); }
-    saveData(); renderCV();
-  });
-});
-
-function restorePersonalFields() {
-  const p = data.personal;
-  ['firstName','lastName','title','email','phone','address','city','linkedin','website','summary'].forEach(f => {
-    const el = document.getElementById('p-' + f);
-    if (el && p[f]) el.value = p[f];
-  });
-  if (p.photo) setPhotoPreview(p.photo);
-}
- 
-function buildExpItem(exp) {
-  const d = document.createElement('div');
-  d.className = 'dyn-item'; d.dataset.id = exp.id;
-  d.innerHTML = `
-    <div class="dyn-head">
-      <div>
-        <div class="dyn-title exp-title">${exp.poste || 'Nouveau poste'}</div>
-        <div class="dyn-subtitle exp-sub">${exp.entreprise || 'Entreprise'}</div>
-        
-      </div>
-      <div class="dyn-actions">
-        <button class="btn-ico btn-toggle" title="Modifier">✏️</button>
-        <button class="btn-ico btn-del" title="Supprimer">🗑️</button>
-      </div>
-    </div>
-    <div class="dyn-form">
-      <div class="form-row">
-        <div class="form-group"><label>Poste *</label><input class="f-poste" type="text" value="${exp.poste||''}" placeholder="ex : Développeur Web"></div>
-        <div class="form-group"><label>Entreprise *</label><input class="f-ent" type="text" value="${exp.entreprise||''}" placeholder="ex : Orange Sénégal"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Date de début</label>
-          <input class="f-deb" type="month" value="${exp.dateDebut||''}">
+        <div class="stage">
+            <div class="cvsheet" id="cv"></div>
         </div>
-        <div class="form-group">
-          <label>Date de fin</label>
-          <input class="f-fin" type="month" value="${exp.dateFin||''}" ${!exp.dateFin?'disabled':''}>
-          <label class="cb-label"><input type="checkbox" class="f-enc" ${!exp.dateFin?'checked':''}> En cours</label>
-        </div>
-      </div>
-      <div class="form-group"><label>Lieu</label><input class="f-lieu" type="text" value="${exp.lieu||''}" placeholder="ex : Dakar, Sénégal"></div>
-      <div class="form-group"><label>Description des missions</label><textarea class="f-desc" rows="3" placeholder="Décrivez vos missions, responsabilités et réalisations...">${exp.description||''}</textarea></div>
-      <div class="form-btns">
-        <button class="btn btn-primary btn-sm btn-save">💾 Enregistrer</button>
-        <button class="btn btn-ghost btn-sm btn-cancel">Annuler</button>
-      </div>
-    </div>`;
-
-  d.querySelector('.btn-toggle').onclick = () => d.classList.toggle('open');
-  d.querySelector('.btn-del').onclick = () => {
-    if (!confirm('Supprimer cette expérience ?')) return;
-    data.experiences = data.experiences.filter(e => e.id !== exp.id);
-    d.remove(); saveData(); renderCV();
-  };
-  const enc = d.querySelector('.f-enc');
-  const fin = d.querySelector('.f-fin');
-  enc.onchange = () => { fin.disabled = enc.checked; if (enc.checked) fin.value = ''; };
-
-  d.querySelector('.btn-save').onclick = () => {
-    const idx = data.experiences.findIndex(e => e.id === exp.id);
-    if (idx !== -1) {
-      data.experiences[idx] = {
-        ...data.experiences[idx],
-        poste: d.querySelector('.f-poste').value,
-        entreprise: d.querySelector('.f-ent').value,
-        dateDebut: d.querySelector('.f-deb').value,
-        dateFin: enc.checked ? '' : fin.value,
-        lieu: d.querySelector('.f-lieu').value,
-        description: d.querySelector('.f-desc').value,
-      };
-      d.querySelector('.exp-title').textContent = data.experiences[idx].poste || 'Nouveau poste';
-      d.querySelector('.exp-sub').textContent = data.experiences[idx].entreprise || 'Entreprise';
-    }
-    d.classList.remove('open'); saveData(); renderCV();
-  };
-  d.querySelector('.btn-cancel').onclick = () => d.classList.remove('open');
-  return d;
-}
-
-document.getElementById('add-exp').onclick = () => {
-  const exp = { id: uid(), poste:'', entreprise:'', dateDebut:'', dateFin:'', lieu:'', description:'' };
-  data.experiences.push(exp);
-  const item = buildExpItem(exp);
-  item.classList.add('open');
-  document.getElementById('list-experiences').appendChild(item);
-  item.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  saveData(); renderCV();
-};
-
-function restoreExperiences() {
-  const list = document.getElementById('list-experiences');
-  list.innerHTML = '';
-  data.experiences.forEach(exp => list.appendChild(buildExpItem(exp)));
-}
-
-
-function buildFormItem(f) {
-  const d = document.createElement('div');
-  d.className = 'dyn-item'; d.dataset.id = f.id;
-  d.innerHTML = `
-    <div class="dyn-head">
-      <div>
-        <div class="dyn-title f-title-disp">${f.diplome || 'Nouveau diplôme'}</div>
-        <div class="dyn-subtitle f-etab-disp">${f.etablissement || 'Établissement'}</div>
-      </div>
-      <div class="dyn-actions">
-        <button class="btn-ico btn-toggle">✏️</button>
-        <button class="btn-ico btn-del">🗑️</button>
-      </div>
     </div>
-    <div class="dyn-form">
-      <div class="form-row">
-        <div class="form-group"><label>Diplôme *</label><input class="f-dip" type="text" value="${f.diplome||''}" placeholder="ex : Licence Informatique"></div>
-        <div class="form-group"><label>Établissement *</label><input class="f-etab" type="text" value="${f.etablissement||''}" placeholder="ex : UCAD, ESP"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label>Année début</label><input class="f-db" type="text" value="${f.dateDebut||''}" placeholder="2020"></div>
-        <div class="form-group"><label>Année fin</label><input class="f-df" type="text" value="${f.dateFin||''}" placeholder="2023"></div>
-      </div>
-      <div class="form-group">
-        <label>Mention</label>
-        <select class="f-men">
-          <option value="">-- Aucune --</option>
-          ${['Passable','Assez Bien','Bien','Très Bien','Félicitations'].map(m=>`<option value="${m}" ${f.mention===m?'selected':''}>${m}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group"><label>Description / Spécialisation</label><textarea class="f-dsc" rows="2" placeholder="Spécialisation, projets notables, activités...">${f.description||''}</textarea></div>
-      <div class="form-btns">
-        <button class="btn btn-primary btn-sm btn-save">💾 Enregistrer</button>
-        <button class="btn btn-ghost btn-sm btn-cancel">Annuler</button>
-      </div>
-    </div>`;
 
-  d.querySelector('.btn-toggle').onclick = () => d.classList.toggle('open');
-  d.querySelector('.btn-del').onclick = () => {
-    if (!confirm('Supprimer cette formation ?')) return;
-    data.formations = data.formations.filter(x => x.id !== f.id);
-    d.remove(); saveData(); renderCV();
-  };
-  d.querySelector('.btn-save').onclick = () => {
-    const idx = data.formations.findIndex(x => x.id === f.id);
-    if (idx !== -1) {
-      data.formations[idx] = {
-        ...data.formations[idx],
-        diplome: d.querySelector('.f-dip').value,
-        etablissement: d.querySelector('.f-etab').value,
-        dateDebut: d.querySelector('.f-db').value,
-        dateFin: d.querySelector('.f-df').value,
-        mention: d.querySelector('.f-men').value,
-        description: d.querySelector('.f-dsc').value,
-      };
-      d.querySelector('.f-title-disp').textContent = data.formations[idx].diplome || 'Nouveau diplôme';
-      d.querySelector('.f-etab-disp').textContent = data.formations[idx].etablissement || 'Établissement';
-    }
-    d.classList.remove('open'); saveData(); renderCV();
-  };
-  d.querySelector('.btn-cancel').onclick = () => d.classList.remove('open');
-  return d;
-}
-
-document.getElementById('add-form').onclick = () => {
-  const f = { id: uid(), diplome:'', etablissement:'', dateDebut:'', dateFin:'', mention:'', description:'' };
-  data.formations.push(f);
-  const item = buildFormItem(f);
-  item.classList.add('open');
-  document.getElementById('list-formations').appendChild(item);
-  item.scrollIntoView({ behavior:'smooth', block:'nearest' });
-  saveData(); renderCV();
-};
-
-function restoreFormations() {
-  const list = document.getElementById('list-formations');
-  list.innerHTML = '';
-  data.formations.forEach(f => list.appendChild(buildFormItem(f)));
-}
-
-
-const LVL_LABELS = ['','Débutant','Élémentaire','Intermédiaire','Avancé','Expert'];
-
-function buildCompItem(c) {
-  const d = document.createElement('div');
-  d.className = 'comp-item'; d.dataset.id = c.id;
-  d.innerHTML = `
-    <input class="comp-name-input" type="text" value="${c.nom||''}" placeholder="ex : JavaScript, Photoshop...">
-    <div class="stars">
-      ${[1,2,3,4,5].map(n=>`<span class="star ${c.niveau>=n?'on':''}" data-v="${n}">★</span>`).join('')}
-    </div>
-    <span class="lvl-label">${LVL_LABELS[c.niveau]||''}</span>
-    <button class="btn-ico" style="flex-shrink:0">🗑️</button>`;
-
-  d.querySelector('.comp-name-input').oninput = e => {
-    const idx = data.competences.findIndex(x => x.id === c.id);
-    if (idx !== -1) data.competences[idx].nom = e.target.value;
-    saveData(); renderCV();
-  };
-
-  d.querySelectorAll('.star').forEach(s => {
-    s.onmouseenter = () => {
-      const v = +s.dataset.v;
-      d.querySelectorAll('.star').forEach((x,i) => x.classList.toggle('on', i < v));
-    };
-    s.onmouseleave = () => {
-      const idx = data.competences.findIndex(x => x.id === c.id);
-      const niv = idx !== -1 ? data.competences[idx].niveau : 0;
-      d.querySelectorAll('.star').forEach((x,i) => x.classList.toggle('on', i < niv));
-    };
-    s.onclick = () => {
-      const v = +s.dataset.v;
-      const idx = data.competences.findIndex(x => x.id === c.id);
-      if (idx !== -1) { data.competences[idx].niveau = v; d.querySelector('.lvl-label').textContent = LVL_LABELS[v]; }
-      d.querySelectorAll('.star').forEach((x,i) => x.classList.toggle('on', i < v));
-      saveData(); renderCV();
-    };
-  });
-
-  d.querySelector('.btn-ico').onclick = () => {
-    data.competences = data.competences.filter(x => x.id !== c.id);
-    d.remove(); saveData(); renderCV();
-  };
-  return d;
-}
-
-document.getElementById('add-comp').onclick = () => {
-  const c = { id: uid(), nom:'', niveau: 3 };
-  data.competences.push(c);
-  const item = buildCompItem(c);
-  document.getElementById('list-competences').appendChild(item);
-  item.querySelector('.comp-name-input').focus();
-  saveData(); renderCV();
-};
-
-function restoreCompetences() {
-  const list = document.getElementById('list-competences');
-  list.innerHTML = '';
-  data.competences.forEach(c => list.appendChild(buildCompItem(c)));
-}
-function buildLangItem(l) {
-const d = document.createElement('div');
-d.className = 'lang-item'; d.dataset.id = l.id;
-d.innerHTML = `
-<input class="lang-name-input" type="text" value="${l.nom||''}" placeholder="ex : Wolof, Anglais...">
-<select class="lang-select">
-<option value="natif" ${l.niveau==='natif'?'selected':''}>Langue natale</option>
-<option value="C2" ${l.niveau==='C2'?'selected':''}>C2 – Maîtrise</option>
-<option value="C1" ${l.niveau==='C1'?'selected':''}>C1 – Autonome</option>
-<option value="B2" ${l.niveau==='B2'?'selected':''}>B2 – Avancé</option>
-<option value="B1" ${l.niveau==='B1'?'selected':''}>B1 – Intermédiaire</option>
-<option value="A2" ${l.niveau==='A2'?'selected':''}>A2 – Élémentaire</option>
-<option value="A1" ${l.niveau==='A1'?'selected':''}>A1 – Débutant</option>
-</select>
-<button class="btn-ico"> </button>`;
-
-d.querySelector('.lang-name-input').oninput = e => {
-const idx = data.langues.findIndex(x => x.id === l.id);
-if (idx !== -1) data.langues[idx].nom = e.target.value;
-saveData(); renderCV();
-};
-d.querySelector('.lang-select').onchange = e => {
-const idx = data.langues.findIndex(x => x.id === l.id);
-if (idx !== -1) data.langues[idx].niveau = e.target.value;
-saveData(); renderCV();
-};
-d.querySelector('.btn-ico').onclick = () => {
-data.langues = data.langues.filter(x => x.id !== l.id);
-d.remove(); saveData(); renderCV();
-};
-return d;
-}
-
-document.getElementById('add-lang').onclick = () => {
-const l = { id: uid(), nom:'', niveau:'B1' };
-data.langues.push(l);
-document.getElementById('list-langues').appendChild(buildLangItem(l));
-saveData(); renderCV();
-};
-
-function restoreLangues() {
-const list = document.getElementById('list-langues');
-list.innerHTML = '';
-data.langues.forEach(l => list.appendChild(buildLangItem(l)));
-}
-function addInteretTag(nom) {
-if (!nom.trim()) return;
-const i = { id: uid(), nom: nom.trim() };
-data.interets.push(i);
-const box = document.getElementById('tags-box');
-const field = document.getElementById('interet-field');
-const sp = document.createElement('span');
-sp.className = 'itag'; sp.dataset.id = i.id;
-sp.innerHTML = `${i.nom} <button class="itag-x">×</button>`;
-sp.querySelector('.itag-x').onclick = () => {
-data.interets = data.interets.filter(x => x.id !== i.id);
-sp.remove(); saveData(); renderCV();
-};
-box.insertBefore(sp, field);
-field.value = '';
-saveData(); renderCV();
-}
-
-document.getElementById('interet-field').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addInteretTag(e.target.value); } });
-document.getElementById('add-int').onclick = () => { addInteretTag(document.getElementById('interet-field').value); };
-
-function restoreInterets() {
-const box = document.getElementById('tags-box');
-const field = document.getElementById('interet-field');
-data.interets.forEach(i => {
-const sp = document.createElement('span');
-sp.className = 'itag'; sp.dataset.id = i.id;
-sp.innerHTML = `${i.nom} <button class="itag-x">×</button>`;
-sp.querySelector('.itag-x').onclick = () => {
-data.interets = data.interets.filter(x => x.id !== i.id);
-sp.remove(); saveData(); renderCV();
-};
-box.insertBefore(sp, field);
-});
-}
-
-document.querySelectorAll('.tpl-card').forEach(card => {
-card.onclick = () => {
-document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
-card.classList.add('active');
-data.template = card.dataset.tpl;
-saveData(); renderCV();
-};
-});
-
-function restoreTemplate() {
-document.querySelectorAll('.tpl-card').forEach(c => c.classList.remove('active'));
-const card = document.querySelector(`.tpl-card[data-tpl="${data.template||'moderne'}"]`);
-if (card) card.classList.add('active');
-}
-
-
-document.getElementById('btn-save-pwd').onclick = () => {
-const np = document.getElementById('pwd-new');
-const cp = document.getElementById('pwd-confirm');
-clearErr(np); clearErr(cp);
-if (!validatePassword(np.value)) { showErr(np, 'Le mot de passe doit contenir au minimum 6 caractères.'); return; }
-if (np.value !== cp.value) { showErr(cp, 'Les mots de passe ne correspondent pas.'); return; }
-data.pwd = np.value;
-saveData(); toast('Mot de passe enregistré !', 'ok');
-};
-
-document.getElementById('btn-export-json').onclick = () => {
-const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'cv-data.json'; a.click();
-};
-
-document.getElementById('btn-reset').onclick = () => {
-if (!confirm('Effacer toutes les données ? Cette action est irréversible.')) return;
-localStorage.removeItem(STORAGE_KEY);
-toast('Données effacées. Rechargement...', 'info');
-setTimeout(() => location.reload(), 1200);
-};
-
-document.getElementById('btn-export').onclick = () => {
-const p = data.personal;
-const errs = [];
-if (!p.firstName) errs.push({ id:'p-firstName', msg:'Le prénom est obligatoire.' });
-if (!p.lastName) errs.push({ id:'p-lastName', msg:'Le nom est obligatoire.' });
-if (!p.email) errs.push({ id:'p-email', msg:'L\'email est obligatoire.' });
-else if (!validateEmail(p.email)) errs.push({ id:'p-email', msg:'Email invalide.' });
-
-if (errs.length) {
-document.querySelector('[data-sec="personnel"]').click();
-errs.forEach(e => { const el = document.getElementById(e.id); if (el) showErr(el, e.msg); });
-toast('Veuillez corriger les erreurs avant d\'exporter.', 'err');
-return;
-}
-
-const cvHtml = buildCVHtml();
-const w = window.open('', '_blank');
-w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
-<style>
-@page { size: A4; margin: 0; }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-${getPrintStyles()}
-</style>
-</head><body>${cvHtml}
-<script>window.onload=()=>{setTimeout(()=>window.print(),600)}<\/script>
-</body></html>`);
-w.document.close();
-};
-
-function lvlLabel(n) { return LVL_LABELS[n] || ''; }
-function langLabel(v) {
-const m = {natif:'Langue natale',C2:'C2 – Maîtrise',C1:'C1 – Autonome',B2:'B2 – Avancé',B1:'B1 – Intermédiaire',A2:'A2 – Élémentaire',A1:'A1 – Débutant'};
-return m[v] || v;
-}
-
-function getPrintStyles() {
-
-return Array.from(document.styleSheets).map(ss => {
-try { return Array.from(ss.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return ''; }
-}).join('\n');
-}
-
-function buildModerne() {
-const p = data.personal;
-const name = `${p.firstName} ${p.lastName}`.trim() || 'Votre Nom';
-const initials = `${(p.firstName||'?')[0]}${(p.lastName||'')[0]||''}`.toUpperCase();
-
-const photoHtml = p.photo
-? `<div class="m-photo"><img src="${p.photo}" alt="Photo"></div>`
-: `<div class="m-photo">${initials}</div>`;
-
-const exps = data.experiences.map(e => `
-<div class="cv-item">
-<div class="ci-row">
-<div><span class="ci-title">${e.poste||''}</span><span class="ci-sub">${e.entreprise||''}</span></div>
-<span class="ci-date">${e.dateDebut||''} ${e.dateDebut||e.dateFin?'–':''} ${e.dateFin||'Présent'}</span>
 </div>
-${e.lieu?`<div class="ci-lieu">  ${e.lieu}</div>`:''}
-${e.description?`<div class="ci-desc">${e.description}</div>`:''}
-</div>`).join('');
 
-const forms = data.formations.map(f => `
-<div class="cv-item">
-<div class="ci-row">
-<div><span class="ci-title">${f.diplome||''}</span><span class="ci-sub">${f.etablissement||''}</span></div>
-<span class="ci-date">${f.dateDebut||''} ${f.dateFin?'– '+f.dateFin:''}</span>
-</div>
-${f.mention?`<span class="ci-mention">Mention ${f.mention}</span>`:''}
-${f.description?`<div class="ci-desc">${f.description}</div>`:''}
-</div>`).join('');
+<div id="toast"></div>
 
-const comps = data.competences.map(c => `
-<div class="comp-row">
-<div class="comp-head"><span class="comp-name">${c.nom||''}</span><span class="comp-lvl">${lvlLabel(c.niveau)}</span></div>
-<div class="comp-bar"><div class="comp-fill" style="width:${(c.niveau/5)*100}%"></div></div>
-</div>`).join('');
+<script src="script.js"></script>
 
-const langs = data.langues.map(l => `
-<div class="lang-row-cv"><span class="ln">${l.nom||''}</span><span class="lv">${langLabel(l.niveau)}</span></div>`).join('');
-
-const ints = data.interets.map(i => `<span class="int-tag">${i.nom||''}</span>`).join('');
-
-return `<div class="cv-moderne">
-<div class="m-header">
-<div class="m-header-inner">
-${photoHtml}
-<div>
-<div class="m-name">${name}</div>
-${p.title?`<div class="m-job">${p.title}</div>`:''}
-<div class="m-contacts">
-${p.email?`<span>  ${p.email}</span>`:''}
-${p.phone?`<span>  ${p.phone}</span>`:''}
-${(p.address||p.city)?`<span>  ${[p.address,p.city].filter(Boolean).join(', ')}</span>`:''}
-${p.linkedin?`<span>  ${p.linkedin}</span>`:''}
-${p.website?`<span>  ${p.website}</span>`:''}
-</div>
-</div>
-</div>
-</div>
-<div class="m-body">
-<div class="m-side">
-${comps?`<div class="cv-sec"><div class="cv-sec-title">  Compétences</div>${comps}</div>`:''}
-${langs?`<div class="cv-sec"><div class="cv-sec-title">  Langues</div>${langs}</div>`:''}
-${ints?`<div class="cv-sec"><div class="cv-sec-title">  Centres d'intérêt</div><div class="int-tags">${ints}</div></div>`:''}
-</div>
-<div class="m-main">
-${p.summary?`<div class="cv-sec"><div class="cv-sec-title">  Profil</div><p class="cv-summary">${p.summary}</p></div>`:''}
-${exps?`<div class="cv-sec"><div class="cv-sec-title">  Expériences</div>${exps}</div>`:''}
-${forms?`<div class="cv-sec"><div class="cv-sec-title">  Formations</div>${forms}</div>`:''}
-</div>
-</div>
-</div>`;
-}
-
-function buildClassique() {
-const p = data.personal;
-const name = `${p.firstName} ${p.lastName}`.trim() || 'Votre Nom';
-const initials = `${(p.firstName||'?')[0]}${(p.lastName||'')[0]||''}`.toUpperCase();
-
-const photoHtml = p.photo ? `
- <div class="c-photo"><img src="${p.photo}" alt="Photo"></div>` : `
-<div class="c-photo">${initials}</div>`;
-const exps = data.experiences.map(e => `
-<div class="c-item">
-<div class="c-left">
-<div class="c-date">${e.dateDebut||''}<br>${e.dateFin?'– '+e.dateFin:'– Présent'}</div>
-${e.lieu?`<div class="c-lieu">${e.lieu}</div>`:''}
-</div>
-<div class="c-right">
-<span class="c-item-title">${e.poste||''}</span>
-<span class="c-item-sub">${e.entreprise||''}</span>
-${e.description?`<p class="c-item-desc">${e.description}</p>`:''}
-</div>
-</div>`).join('');
-const forms = data.formations.map(f => `
-<div class="c-item">
-<div class="c-left">
-<div class="c-date">${f.dateDebut||''}<br>${f.dateFin?'– '+f.dateFin:''}</div>
-</div>
-<div class="c-right">
-<span class="c-item-title">${f.diplome||''}</span>
-<span class="c-item-sub">${f.etablissement||''}</span>
-${f.mention?`<div class="c-mention">Mention ${f.mention}</div>`:''}
-${f.description?`<p class="c-item-desc">${f.description}</p>`:''}
-</div>
-</div>`).join('');
-const comps = data.competences.map(c => {
-const dots = [1,2,3,4,5].map(n=>`<div class="c-dot ${c.niveau>=n?'f':''}"></div>`).join('');
-return `<div class="c-comp-row"><span>${c.nom||''}</span><div class="c-dots">${dots}</div></div>`;
-}).join('');
-const langs = data.langues.map(l => `
-<div class="c-lang-item"><strong>${l.nom||''}</strong><span>${langLabel(l.niveau)}</span></div>`).join('');
-const ints = data.interets.map(i => `<span class="c-int-item">${i.nom||''}</span>`).join('');
-return `<div class="cv-classique">
-<div class="c-header">
-<div class="c-header-inner">
-${photoHtml}
-<div>
-<div class="c-name">${name}</div>
-${p.title?`<div class="c-job">${p.title}</div>`:''}
-<div class="c-contacts">
-${p.email?`<span>  ${p.email}</span>`:''}
-${p.phone?`<span>  ${p.phone}</span>`:''}
-${(p.address||p.city)?`<span>⌖ ${[p.address,p.city].filter(Boolean).join(', ')}</span>`:''}
-${p.linkedin?`<span>in ${p.linkedin}</span>`:''}
-</div>
-</div>
-</div>
-</div>
-<div class="c-body">
-${p.summary?`<div class="c-sec"><div class="c-sec-title">PROFIL</div><div class="c-divider"></div><p class="c-summary">${p.summary}</p></div>`:''}
-${exps?`<div class="c-sec"><div class="c-sec-title">EXPÉRIENCES PROFESSIONNELLES</div><div class="c-divider"></div>${exps}</div>`:''}
-${forms?`<div class="c-sec"><div class="c-sec-title">FORMATIONS</div><div class="c-divider"></div>${forms}</div>`:''}
-${comps?`<div class="c-sec"><div class="c-sec-title">COMPÉTENCES</div><div class="c-divider"></div><div class="c-comp-grid">${comps}</div></div>`:''}
-<div class="c-two-col">
-${langs?`<div class="c-sec"><div class="c-sec-title">LANGUES</div><div class="c-divider"></div><div class="c-lang-grid">${langs}</div></div>`:''}
-${ints?`<div class="c-sec"><div class="c-sec-title">CENTRES D'INTÉRÊT</div><div class="c-divider"></div><div class="c-int-list">${ints}</div></div>`:''}
-</div>
-</div>
-</div>`;
-}
-function buildCVHtml() {
-return data.template === 'classique' ? buildClassique() : buildModerne();
-}
-let renderTimer = null;
-function renderCV() {
-clearTimeout(renderTimer);
-renderTimer = setTimeout(() => {
-document.getElementById('cv-output').innerHTML = buildCVHtml();
-}, 80);
-}
-function toast(msg, type='info') {
-const el = document.createElement('div');
-el.className = `toast toast-${type}`;
-el.textContent = msg;
-document.body.appendChild(el);
-requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
-setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3000);
-}
-function init() {
-loadData();
-restorePersonalFields();
-restoreExperiences();
-restoreFormations();
-restoreCompetences();
-restoreLangues();
-restoreInterets();
-restoreTemplate();
-renderCV();
-const hasData = data.personal.firstName || data.experiences.length || data.competences.length;
-if (hasData) toast('  Données restaurées depuis votre dernière session.', 'ok');
-const mbBtn = document.getElementById('btn-mobile-preview');
-if (window.innerWidth <= 860) mbBtn.style.display = 'inline-flex';
-mbBtn.onclick = () => {
-const pp = document.getElementById('preview-panel');
-pp.classList.toggle('show');
-mbBtn.textContent = pp.classList.contains('show') ? '  Éditer' : '  Aperçu';
-};
-}
-document.addEventListener('DOMContentLoaded', init);
-</script>
 </body>
 </html>
